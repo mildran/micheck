@@ -6,6 +6,7 @@ import com.marcelino.micheck.service.TipoService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import com.marcelino.micheck.model.Episodio;
 
 @Controller
 @RequestMapping("/entradas")
@@ -38,5 +39,21 @@ public class EntradaController {
         entradaService.eliminar(indice);
         return "redirect:/entradas";
     }
+
+    @GetMapping("/{indice}")
+    public String detalle(@PathVariable int indice, Model model) {
+        model.addAttribute("entrada", entradaService.getEntrada(indice));
+        model.addAttribute("indice", indice);
+        return "detalle";
+    }
+
+    @PostMapping("/{indice}/episodios/{eIndice}")
+    public String marcarEpisodio(@PathVariable int indice, @PathVariable int eIndice) {
+        Entrada entrada = entradaService.getEntrada(indice);
+        Episodio episodio = entrada.getEpisodios().get(eIndice);
+        episodio.setVisto(!episodio.isVisto());
+        return "redirect:/entradas/" + indice;
+    }
+
 
 }

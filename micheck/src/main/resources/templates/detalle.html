@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>MiCheck - Detalle</title>
+</head>
+<body>
+<h1 th:text="${entrada.nombre}"></h1>
+<h2 th:text="'Temporada ' + ${entrada.temporada}"></h2>
+
+<a th:href="@{/entradas}">← Volver</a>
+
+<ul>
+  <li th:each="episodio, i : ${entrada.episodios}">
+    <form th:action="@{/entradas/{indice}/episodios/{eIndice}(indice=${indice}, eIndice=${i.index})}" method="post">
+      <input type="checkbox"
+             th:checked="${episodio.visto}"
+             onchange="this.form.submit()"/>
+      <span th:text="${entrada.tipo.nombreUnidad} + ' ' + ${episodio.numero}"></span>
+    </form>
+  </li>
+</ul>
+
+</body>
+</html>

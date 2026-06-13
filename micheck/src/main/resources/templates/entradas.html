@@ -30,6 +30,7 @@
     <span th:text="${entrada.tipo.nombre}"></span> -
     <span th:text="${entrada.temporada}"></span> -
     <span th:text="${entrada.numeroUnidades}"></span> episodios
+    <a th:href="@{/entradas/{indice}(indice=${i.index})}">Ver</a>
     <a th:href="@{/entradas/eliminar/{indice}(indice=${i.index})}">Eliminar</a>
   </li>
 </ul>

@@ -2,7 +2,7 @@ package com.marcelino.micheck.service;
 
 import com.marcelino.micheck.model.Entrada;
 import org.springframework.stereotype.Service;
-
+import com.marcelino.micheck.model.Episodio;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +16,11 @@ public class EntradaService {
     }
 
     public void agregar(Entrada entrada) {
+        List<Episodio> episodios = new ArrayList<>();
+        for (int i = 1; i <= entrada.getNumeroUnidades(); i++) {
+            episodios.add(new Episodio(i, false));
+        }
+        entrada.setEpisodios(episodios);
         entradas.add(entrada);
     }
 

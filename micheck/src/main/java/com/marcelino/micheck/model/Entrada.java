@@ -1,11 +1,15 @@
 package com.marcelino.micheck.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Entrada {
     private String nombre;
     private Tipo tipo;
     private int temporada;
     private int numeroUnidades;
     private String observaciones;
+    private List<Episodio> episodios = new ArrayList<>();
 
     public Entrada() {
     }
@@ -55,5 +59,13 @@ public class Entrada {
 
     public void setObservaciones(String observaciones) {
         this.observaciones = observaciones;
+    }
+
+    public List<Episodio> getEpisodios() {
+        return episodios;
+    }
+
+    public void setEpisodios(List<Episodio> episodios) {
+        this.episodios = episodios;
     }
 }
