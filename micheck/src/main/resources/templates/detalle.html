@@ -12,6 +12,7 @@
       <h2 th:text="${entrada.nombre}"></h2>
       <span class="badge bg-primary" th:text="${entrada.tipo.nombre}"></span>
       <span th:if="${entrada.tipo.tieneTemporadas}" class="badge bg-secondary" th:text="'Temporada ' + ${entrada.temporada}"></span>
+      <p th:if="${entrada.observaciones}" class="text-muted mt-2" th:text="${entrada.observaciones}"></p>
     </div>
     <a href="/entradas" class="btn btn-outline-secondary">← Volver</a>
   </div>

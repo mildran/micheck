@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.marcelino.micheck.model.Episodio;
+import com.marcelino.micheck.model.Tipo;
 
 @Controller
 @RequestMapping("/entradas")
@@ -21,10 +22,20 @@ public class EntradaController {
     }
 
     @GetMapping
-    public String listar(Model model) {
-        model.addAttribute("entradas", entradaService.getTodas());
-        model.addAttribute("entrada", new Entrada());
+    public String listar(@RequestParam(required = false) Integer tipoIndice, Model model) {
         model.addAttribute("tipos", tipoService.getTodos());
+        model.addAttribute("entrada", new Entrada());
+        model.addAttribute("tipoIndice", tipoIndice);
+
+        if (tipoIndice != null && tipoIndice >= 0) {
+            Tipo tipoSeleccionado = tipoService.getTodos().get(tipoIndice);
+            model.addAttribute("entradas", entradaService.getByTipo(tipoSeleccionado));
+            model.addAttribute("tipoSeleccionado", tipoSeleccionado);
+        } else {
+            model.addAttribute("entradas", entradaService.getTodas());
+            model.addAttribute("tipoSeleccionado", null);
+        }
+
         return "entradas";
     }
 
