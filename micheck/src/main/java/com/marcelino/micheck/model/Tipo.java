@@ -1,9 +1,12 @@
-package com.marcelino.micheck;
+package com.marcelino.micheck.model;
 
 public class Tipo {
     private String nombre;
     private boolean tieneTemporadas;
     private String nombreUnidad;
+
+    public Tipo() {
+    }
 
     public Tipo(String nombre, boolean tieneTemporadas, String nombreUnidad) {
         this.nombre = nombre;

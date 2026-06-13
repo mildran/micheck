@@ -1,4 +1,4 @@
-package com.marcelino.micheck;
+package com.marcelino.micheck.model;
 
 public class Entrada {
     private String nombre;

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>MiCheck - Tipos</title>
+</head>
+<body>
+<h1>Tipos</h1>
+
+<!-- Formulario para crear un nuevo tipo -->
+<form th:action="@{/tipos}" th:object="${tipo}" method="post">
+  <input type="text" th:field="*{nombre}" placeholder="Nombre (Serie, Comic...)"/>
+  <label>
+    <input type="checkbox" th:field="*{tieneTemporadas}"/> ¿Tiene temporadas?
+  </label>
+  <input type="text" th:field="*{nombreUnidad}" placeholder="Nombre unidad (Episodio, Tomo...)"/>
+  <button type="submit">Añadir</button>
+</form>
+
+<!-- Lista de tipos existentes -->
+<ul>
+  <li th:each="tipo, i : ${tipos}">
+    <span th:text="${tipo.nombre}"></span> -
+    <span th:text="${tipo.tieneTemporadas} ? 'Con temporadas' : 'Sin temporadas'"></span> -
+    <span th:text="${tipo.nombreUnidad}"></span>
+    <a th:href="@{/tipos/eliminar/{indice}(indice=${i.index})}">Eliminar</a>
+  </li>
+</ul>
+
+</body>
+</html>

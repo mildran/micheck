@@ -1,4 +1,4 @@
-package com.marcelino.micheck;
+package com.marcelino.micheck.model;
 
 public class Episodio {
     private int numero;

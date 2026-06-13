@@ -1,4 +1,4 @@
-package com.marcelino.micheck;
+package com.marcelino.micheck.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
