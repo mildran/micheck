@@ -1,11 +1,18 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 <head>
-    <meta charset="UTF-8">
-    <title>MiCheck</title>
+    <title>MiCheck - Inicio</title>
 </head>
 <body>
-<h1>Bienvenido a MiCheck</h1>
-<p>Tu aplicación de seguimiento personal</p>
+<div layout:fragment="content">
+    <div class="text-center mt-5">
+        <h1 class="display-4">✅ MiCheck</h1>
+        <p class="lead">Tu aplicación de seguimiento personal</p>
+        <a href="/entradas" class="btn btn-primary btn-lg me-2">Ver Entradas</a>
+        <a href="/tipos" class="btn btn-outline-secondary btn-lg">Gestionar Tipos</a>
+    </div>
+</div>
 </body>
 </html>

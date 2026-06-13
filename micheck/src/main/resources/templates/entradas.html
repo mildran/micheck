@@ -1,39 +1,63 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 <head>
-  <meta charset="UTF-8">
   <title>MiCheck - Entradas</title>
 </head>
 <body>
-<h1>Entradas</h1>
+<div layout:fragment="content">
+  <h2 class="mb-4">Entradas</h2>
 
-<!-- Formulario para crear una nueva entrada -->
-<form th:action="@{/entradas}" th:object="${entrada}" method="post">
-  <select th:field="*{tipo}">
-    <option value="">-- Selecciona un tipo --</option>
-    <option th:each="tipo, i : ${tipos}"
-            th:value="${i.index}"
-            th:text="${tipo.nombre}">
-    </option>
-  </select>
-  <input type="text" th:field="*{nombre}" placeholder="Nombre"/>
-  <input type="number" th:field="*{temporada}" placeholder="Temporada"/>
-  <input type="number" th:field="*{numeroUnidades}" placeholder="Número de episodios"/>
-  <input type="text" th:field="*{observaciones}" placeholder="Observaciones"/>
-  <button type="submit">Añadir</button>
-</form>
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title">Nueva Entrada</h5>
+      <form th:action="@{/entradas}" th:object="${entrada}" method="post" class="row g-3">
+        <div class="col-md-2">
+          <select th:field="*{tipo}" class="form-select">
+            <option value="">-- Tipo --</option>
+            <option th:each="tipo, i : ${tipos}"
+                    th:value="${i.index}"
+                    th:text="${tipo.nombre}">
+            </option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <input type="text" th:field="*{nombre}" class="form-control" placeholder="Nombre"/>
+        </div>
+        <div class="col-md-2">
+          <input type="number" th:field="*{temporada}" class="form-control" placeholder="Temporada"/>
+        </div>
+        <div class="col-md-2">
+          <input type="number" th:field="*{numeroUnidades}" class="form-control" placeholder="Nº episodios"/>
+        </div>
+        <div class="col-md-2">
+          <input type="text" th:field="*{observaciones}" class="form-control" placeholder="Observaciones"/>
+        </div>
+        <div class="col-md-1">
+          <button type="submit" class="btn btn-primary w-100">Añadir</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-<!-- Lista de entradas -->
-<ul>
-  <li th:each="entrada, i : ${entradas}">
-    <span th:text="${entrada.nombre}"></span> -
-    <span th:text="${entrada.tipo.nombre}"></span> -
-    <span th:text="${entrada.temporada}"></span> -
-    <span th:text="${entrada.numeroUnidades}"></span> episodios
-    <a th:href="@{/entradas/{indice}(indice=${i.index})}">Ver</a>
-    <a th:href="@{/entradas/eliminar/{indice}(indice=${i.index})}">Eliminar</a>
-  </li>
-</ul>
-
+  <div class="row">
+    <div class="col-md-4 mb-3" th:each="entrada, i : ${entradas}">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title" th:text="${entrada.nombre}"></h5>
+          <p class="card-text">
+            <span class="badge bg-primary" th:text="${entrada.tipo.nombre}"></span>
+            <span th:if="${entrada.tipo.tieneTemporadas}" th:text="' · Temporada ' + ${entrada.temporada}"></span>
+            <br/>
+            <small th:text="${entrada.numeroUnidades} + ' ' + ${entrada.tipo.nombreUnidad} + 's'"></small>
+          </p>
+          <a th:href="@{/entradas/{indice}(indice=${i.index})}" class="btn btn-primary btn-sm me-2">Ver</a>
+          <a th:href="@{/entradas/eliminar/{indice}(indice=${i.index})}" class="btn btn-danger btn-sm">Eliminar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
