@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>MiCheck - Entradas</title>
+</head>
+<body>
+<h1>Entradas</h1>
+
+<!-- Formulario para crear una nueva entrada -->
+<form th:action="@{/entradas}" th:object="${entrada}" method="post">
+  <select th:field="*{tipo}">
+    <option value="">-- Selecciona un tipo --</option>
+    <option th:each="tipo, i : ${tipos}"
+            th:value="${i.index}"
+            th:text="${tipo.nombre}">
+    </option>
+  </select>
+  <input type="text" th:field="*{nombre}" placeholder="Nombre"/>
+  <input type="number" th:field="*{temporada}" placeholder="Temporada"/>
+  <input type="number" th:field="*{numeroUnidades}" placeholder="Número de episodios"/>
+  <input type="text" th:field="*{observaciones}" placeholder="Observaciones"/>
+  <button type="submit">Añadir</button>
+</form>
+
+<!-- Lista de entradas -->
+<ul>
+  <li th:each="entrada, i : ${entradas}">
+    <span th:text="${entrada.nombre}"></span> -
+    <span th:text="${entrada.tipo.nombre}"></span> -
+    <span th:text="${entrada.temporada}"></span> -
+    <span th:text="${entrada.numeroUnidades}"></span> episodios
+    <a th:href="@{/entradas/eliminar/{indice}(indice=${i.index})}">Eliminar</a>
+  </li>
+</ul>
+
+</body>
+</html>

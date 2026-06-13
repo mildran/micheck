@@ -7,6 +7,8 @@ public class Entrada {
     private int numeroUnidades;
     private String observaciones;
 
+    public Entrada() {
+    }
     public Entrada(String nombre, Tipo tipo, int temporada, int numeroUnidades, String observaciones) {
         this.nombre = nombre;
         this.tipo = tipo;
