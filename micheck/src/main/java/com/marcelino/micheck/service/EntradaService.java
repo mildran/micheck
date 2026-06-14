@@ -1,11 +1,12 @@
 package com.marcelino.micheck.service;
 
 import com.marcelino.micheck.model.Entrada;
-import org.springframework.stereotype.Service;
 import com.marcelino.micheck.model.Episodio;
+import com.marcelino.micheck.model.Categoria;
+import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
-import com.marcelino.micheck.model.Tipo;
 
 @Service
 public class EntradaService {
@@ -33,10 +34,10 @@ public class EntradaService {
         return entradas.get(indice);
     }
 
-    public List<Entrada> getByTipo(Tipo tipo) {
+    public List<Entrada> getByCategoria(Categoria categoria) {
         List<Entrada> resultado = new ArrayList<>();
         for (Entrada entrada : entradas) {
-            if (entrada.getTipo().equals(tipo)) {
+            if (entrada.getTipo().equals(categoria)) {
                 resultado.add(entrada);
             }
         }

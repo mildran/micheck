@@ -1,39 +1,39 @@
 package com.marcelino.micheck.controller;
 
 import com.marcelino.micheck.model.Entrada;
+import com.marcelino.micheck.model.Episodio;
+import com.marcelino.micheck.model.Categoria;
 import com.marcelino.micheck.service.EntradaService;
-import com.marcelino.micheck.service.TipoService;
+import com.marcelino.micheck.service.CategoriaService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import com.marcelino.micheck.model.Episodio;
-import com.marcelino.micheck.model.Tipo;
 
 @Controller
 @RequestMapping("/entradas")
 public class EntradaController {
 
     private final EntradaService entradaService;
-    private final TipoService tipoService;
+    private final CategoriaService categoriaService;
 
-    public EntradaController(EntradaService entradaService, TipoService tipoService) {
+    public EntradaController(EntradaService entradaService, CategoriaService categoriaService) {
         this.entradaService = entradaService;
-        this.tipoService = tipoService;
+        this.categoriaService = categoriaService;
     }
 
     @GetMapping
-    public String listar(@RequestParam(required = false) Integer tipoIndice, Model model) {
-        model.addAttribute("tipos", tipoService.getTodos());
+    public String listar(@RequestParam(required = false) Integer categoriaIndice, Model model) {
+        model.addAttribute("categorias", categoriaService.getTodos());
         model.addAttribute("entrada", new Entrada());
-        model.addAttribute("tipoIndice", tipoIndice);
+        model.addAttribute("categoriaIndice", categoriaIndice);
 
-        if (tipoIndice != null && tipoIndice >= 0) {
-            Tipo tipoSeleccionado = tipoService.getTodos().get(tipoIndice);
-            model.addAttribute("entradas", entradaService.getByTipo(tipoSeleccionado));
-            model.addAttribute("tipoSeleccionado", tipoSeleccionado);
+        if (categoriaIndice != null && categoriaIndice >= 0) {
+            Categoria categoriaSeleccionada = categoriaService.getTodos().get(categoriaIndice);
+            model.addAttribute("entradas", entradaService.getByCategoria(categoriaSeleccionada));
+            model.addAttribute("categoriaSeleccionada", categoriaSeleccionada);
         } else {
             model.addAttribute("entradas", entradaService.getTodas());
-            model.addAttribute("tipoSeleccionado", null);
+            model.addAttribute("categoriaSeleccionada", null);
         }
 
         return "entradas";
@@ -65,6 +65,5 @@ public class EntradaController {
         episodio.setVisto(!episodio.isVisto());
         return "redirect:/entradas/" + indice;
     }
-
 
 }

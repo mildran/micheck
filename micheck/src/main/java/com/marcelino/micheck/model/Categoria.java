@@ -1,14 +1,14 @@
 package com.marcelino.micheck.model;
 
-public class Tipo {
+public class Categoria {
     private String nombre;
     private boolean tieneTemporadas;
     private String nombreUnidad;
 
-    public Tipo() {
+    public Categoria() {
     }
 
-    public Tipo(String nombre, boolean tieneTemporadas, String nombreUnidad) {
+    public Categoria(String nombre, boolean tieneTemporadas, String nombreUnidad) {
         this.nombre = nombre;
         this.tieneTemporadas = tieneTemporadas;
         this.nombreUnidad = nombreUnidad;

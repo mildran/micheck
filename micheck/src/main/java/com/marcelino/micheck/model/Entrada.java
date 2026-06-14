@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Entrada {
     private String nombre;
-    private Tipo tipo;
+    private Categoria tipo;
     private int temporada;
     private int numeroUnidades;
     private String observaciones;
@@ -13,7 +13,7 @@ public class Entrada {
 
     public Entrada() {
     }
-    public Entrada(String nombre, Tipo tipo, int temporada, int numeroUnidades, String observaciones) {
+    public Entrada(String nombre, Categoria tipo, int temporada, int numeroUnidades, String observaciones) {
         this.nombre = nombre;
         this.tipo = tipo;
         this.temporada = temporada;
@@ -29,11 +29,11 @@ public class Entrada {
         this.nombre = nombre;
     }
 
-    public Tipo getTipo() {
+    public Categoria getTipo() {
         return tipo;
     }
 
-    public void setTipo(Tipo tipo) {
+    public void setTipo(Categoria tipo) {
         this.tipo = tipo;
     }
 

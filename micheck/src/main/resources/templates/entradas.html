@@ -9,16 +9,16 @@
 <div layout:fragment="content">
   <h2 class="mb-4">Entradas</h2>
 
-  <!-- Pestañas por tipo -->
+  <!-- Pestañas por categoría -->
   <ul class="nav nav-tabs mb-4">
     <li class="nav-item">
-      <a class="nav-link" th:classappend="${tipoIndice == null} ? 'active' : ''"
+      <a class="nav-link" th:classappend="${categoriaIndice == null} ? 'active' : ''"
          href="/entradas">Todos</a>
     </li>
-    <li class="nav-item" th:each="tipo, i : ${tipos}">
-      <a class="nav-link" th:classappend="${tipoIndice == i.index} ? 'active' : ''"
-         th:href="@{/entradas(tipoIndice=${i.index})}"
-         th:text="${tipo.nombre}">
+    <li class="nav-item" th:each="categoria, i : ${categorias}">
+      <a class="nav-link" th:classappend="${categoriaIndice == i.index} ? 'active' : ''"
+         th:href="@{/entradas(categoriaIndice=${i.index})}"
+         th:text="${categoria.nombre}">
       </a>
     </li>
   </ul>
@@ -30,10 +30,10 @@
       <form th:action="@{/entradas}" th:object="${entrada}" method="post" class="row g-3">
         <div class="col-md-2">
           <select th:field="*{tipo}" class="form-select">
-            <option value="">-- Tipo --</option>
-            <option th:each="tipo, i : ${tipos}"
+            <option value="">-- Categoría --</option>
+            <option th:each="categoria, i : ${categorias}"
                     th:value="${i.index}"
-                    th:text="${tipo.nombre}">
+                    th:text="${categoria.nombre}">
             </option>
           </select>
         </div>
