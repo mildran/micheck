@@ -9,6 +9,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 @Controller
 @RequestMapping("/entradas")
 public class EntradaController {
@@ -40,8 +45,10 @@ public class EntradaController {
     }
 
     @PostMapping
-    public String agregar(@ModelAttribute Entrada entrada) {
-        entradaService.agregar(entrada);
+    public String agregar(@ModelAttribute Entrada entrada,
+                          @RequestParam int numeroTemporada,
+                          @RequestParam int numeroUnidades) {
+        entradaService.agregar(entrada, numeroTemporada, numeroUnidades);
         return "redirect:/entradas";
     }
 
@@ -52,18 +59,59 @@ public class EntradaController {
     }
 
     @GetMapping("/{indice}")
-    public String detalle(@PathVariable int indice, Model model) {
-        model.addAttribute("entrada", entradaService.getEntrada(indice));
+    public String detalle(@PathVariable int indice,
+                          @RequestParam(required = false) Integer temporada,
+                          Model model) {
+        Entrada entrada = entradaService.getEntrada(indice);
+        model.addAttribute("entrada", entrada);
         model.addAttribute("indice", indice);
+
+        int tIndice = (temporada != null) ? temporada : entrada.getTemporadas().size() - 1;
+        model.addAttribute("tIndice", tIndice);
+        model.addAttribute("temporadaActual", entrada.getTemporadas().get(tIndice));
+        List<Episodio> episodiosInvertidos = new ArrayList<>(entrada.getTemporadas().get(tIndice).getEpisodios());
+        Collections.reverse(episodiosInvertidos);
+        model.addAttribute("episodios", episodiosInvertidos);
+
         return "detalle";
     }
 
-    @PostMapping("/{indice}/episodios/{eIndice}")
-    public String marcarEpisodio(@PathVariable int indice, @PathVariable int eIndice) {
+    @PostMapping("/{indice}/temporadas/{tIndice}/episodios/{eIndice}")
+    public String marcarEpisodio(@PathVariable int indice, @PathVariable int tIndice, @PathVariable int eIndice) {
         Entrada entrada = entradaService.getEntrada(indice);
-        Episodio episodio = entrada.getEpisodios().get(eIndice);
+        Episodio episodio = entrada.getTemporadas().get(tIndice).getEpisodios().get(eIndice);
         episodio.setVisto(!episodio.isVisto());
         return "redirect:/entradas/" + indice;
+    }
+
+    @PostMapping("/{indice}/temporadas")
+    public String agregarTemporada(@PathVariable int indice, @RequestParam int numeroEpisodios) {
+        entradaService.agregarTemporada(indice, numeroEpisodios);
+        return "redirect:/entradas/" + indice;
+    }
+
+    @PostMapping("/{indice}/temporadas/{tIndice}/episodios")
+    public String agregarEpisodios(@PathVariable int indice, @PathVariable int tIndice, @RequestParam int cantidad) {
+        entradaService.agregarEpisodios(indice, tIndice, cantidad);
+        return "redirect:/entradas/" + indice;
+    }
+
+    @PostMapping("/{indice}/temporadas/{tIndice}/episodios/eliminar")
+    public String eliminarUltimoEpisodio(@PathVariable int indice, @PathVariable int tIndice) {
+        entradaService.eliminarUltimoEpisodio(indice, tIndice);
+        return "redirect:/entradas/" + indice + "?temporada=" + tIndice;
+    }
+
+    @PostMapping("/{indice}/temporadas/eliminar")
+    public String eliminarUltimaTemporada(@PathVariable int indice) {
+        entradaService.eliminarUltimaTemporada(indice);
+        return "redirect:/entradas/" + indice;
+    }
+
+    @PostMapping("/{indice}/temporadas/{tIndice}/marcar-todos")
+    public String marcarTodos(@PathVariable int indice, @PathVariable int tIndice, @RequestParam boolean visto) {
+        entradaService.marcarTodos(indice, tIndice, visto);
+        return "redirect:/entradas/" + indice + "?temporada=" + tIndice;
     }
 
 }

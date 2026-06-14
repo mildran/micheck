@@ -29,9 +29,11 @@ public class DataLoader implements CommandLineRunner {
         categoriaService.agregar(libro);
 
         // Crear entradas
-        Entrada entrada1 = new Entrada("Breaking Bad", serie, 2, 12, "Muy buena");
-        Entrada entrada2 = new Entrada("One Piece", comic, 0, 10, "Manga japonés");
-        entradaService.agregar(entrada1);
-        entradaService.agregar(entrada2);
+        Entrada entrada1 = new Entrada("Breaking Bad", serie, "Muy buena");
+        entradaService.agregar(entrada1, 1, 7);
+        entradaService.agregarTemporada(0, 13); // Temporada 2 con 13 episodios
+
+        Entrada entrada2 = new Entrada("One Piece", comic, "Manga japonés");
+        entradaService.agregar(entrada2, 1, 10);
     }
 }

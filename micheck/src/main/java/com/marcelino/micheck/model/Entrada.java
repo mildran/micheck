@@ -6,18 +6,15 @@ import java.util.List;
 public class Entrada {
     private String nombre;
     private Categoria tipo;
-    private int temporada;
-    private int numeroUnidades;
     private String observaciones;
-    private List<Episodio> episodios = new ArrayList<>();
+    private List<Temporada> temporadas = new ArrayList<>();
 
     public Entrada() {
     }
-    public Entrada(String nombre, Categoria tipo, int temporada, int numeroUnidades, String observaciones) {
+
+    public Entrada(String nombre, Categoria tipo, String observaciones) {
         this.nombre = nombre;
         this.tipo = tipo;
-        this.temporada = temporada;
-        this.numeroUnidades = numeroUnidades;
         this.observaciones = observaciones;
     }
 
@@ -37,22 +34,6 @@ public class Entrada {
         this.tipo = tipo;
     }
 
-    public int getTemporada() {
-        return temporada;
-    }
-
-    public void setTemporada(int temporada) {
-        this.temporada = temporada;
-    }
-
-    public int getNumeroUnidades() {
-        return numeroUnidades;
-    }
-
-    public void setNumeroUnidades(int numeroUnidades) {
-        this.numeroUnidades = numeroUnidades;
-    }
-
     public String getObservaciones() {
         return observaciones;
     }
@@ -61,11 +42,19 @@ public class Entrada {
         this.observaciones = observaciones;
     }
 
-    public List<Episodio> getEpisodios() {
-        return episodios;
+    public List<Temporada> getTemporadas() {
+        return temporadas;
     }
 
-    public void setEpisodios(List<Episodio> episodios) {
-        this.episodios = episodios;
+    public void setTemporadas(List<Temporada> temporadas) {
+        this.temporadas = temporadas;
+    }
+
+    public int getTotalUnidades() {
+        int total = 0;
+        for (Temporada temporada : temporadas) {
+            total += temporada.getEpisodios().size();
+        }
+        return total;
     }
 }
