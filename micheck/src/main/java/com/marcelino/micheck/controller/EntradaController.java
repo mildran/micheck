@@ -28,16 +28,30 @@ public class EntradaController {
 
     @GetMapping
     public String listar(@RequestParam(required = false) Integer categoriaIndice, Model model) {
+        if (categoriaIndice == null) {
+            if (categoriaService.getTodos().isEmpty()) {
+                categoriaIndice = -1;
+            } else {
+                categoriaIndice = 0;
+            }
+        }
+
         model.addAttribute("categorias", categoriaService.getTodos());
-        model.addAttribute("entrada", new Entrada());
+        model.addAttribute("categorias", categoriaService.getTodos());
         model.addAttribute("categoriaIndice", categoriaIndice);
+
+        Entrada nuevaEntrada = new Entrada();
+        if (categoriaIndice >= 0 && categoriaIndice < categoriaService.getTodos().size()) {
+            nuevaEntrada.setTipo(categoriaService.getTodos().get(categoriaIndice));
+        }
+        model.addAttribute("entrada", nuevaEntrada);
 
         if (categoriaIndice != null && categoriaIndice >= 0) {
             Categoria categoriaSeleccionada = categoriaService.getTodos().get(categoriaIndice);
             model.addAttribute("entradas", entradaService.getByCategoria(categoriaSeleccionada));
             model.addAttribute("categoriaSeleccionada", categoriaSeleccionada);
         } else {
-            model.addAttribute("entradas", entradaService.getTodas());
+            model.addAttribute("entradas", new ArrayList<>());
             model.addAttribute("categoriaSeleccionada", null);
         }
 
@@ -112,6 +126,12 @@ public class EntradaController {
     public String marcarTodos(@PathVariable int indice, @PathVariable int tIndice, @RequestParam boolean visto) {
         entradaService.marcarTodos(indice, tIndice, visto);
         return "redirect:/entradas/" + indice + "?temporada=" + tIndice;
+    }
+
+    @PostMapping("/categorias")
+    public String agregarCategoria(@ModelAttribute("categoria") com.marcelino.micheck.model.Categoria categoria) {
+        categoriaService.agregar(categoria);
+        return "redirect:/entradas";
     }
 
 }

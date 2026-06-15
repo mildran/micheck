@@ -16,6 +16,9 @@ public class CategoriaConverter implements Converter<String, Categoria> {
 
     @Override
     public Categoria convert(String indice) {
+        if (indice.isEmpty()) {
+            return null;
+        }
         return categoriaService.getTodos().get(Integer.parseInt(indice));
     }
 
