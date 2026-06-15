@@ -40,7 +40,8 @@
         <span th:text="${categoria.tieneTemporadas} ? 'Con temporadas' : 'Sin temporadas'"></span> -
         <span th:text="${categoria.nombreUnidad}"></span>
       </div>
-      <a th:href="@{/categorias/eliminar/{indice}(indice=${i.index})}" class="btn btn-danger btn-sm">Eliminar</a>
+      <a th:href="@{/categorias/eliminar/{indice}(indice=${i.index})}" class="btn btn-danger btn-sm"
+         onclick="return confirm('¿Seguro que quieres eliminar esta categoría?')">Eliminar</a>
     </li>
   </ul>
 </div>

@@ -36,13 +36,14 @@
         <button type="submit" class="btn btn-primary btn-sm" th:text="'+ ' + ${entrada.tipo.nombreUnidad} + 's'"></button>
       </form>
 
-      <form th:action="@{/entradas/{indice}/temporadas/{tIndice}/episodios/eliminar(indice=${indice}, tIndice=${tIndice})}" method="post" class="d-inline">
-        <button type="submit" class="btn btn-outline-danger btn-sm" th:text="'− ' + ${entrada.tipo.nombreUnidad}"></button>
+      <form th:action="@{/entradas/{indice}/temporadas/{tIndice}/episodios/eliminar(indice=${indice}, tIndice=${tIndice})}" method="post" class="d-inline"
+            onsubmit="return confirm('¿Eliminar el último ' + this.querySelector('button').dataset.unidad + '?')">
+        <button type="submit" class="btn btn-outline-danger btn-sm" th:text="'− ' + ${entrada.tipo.nombreUnidad}" th:attr="data-unidad=${entrada.tipo.nombreUnidad}"></button>
       </form>
 
-      <form th:if="${entrada.tipo.tieneTemporadas}" th:action="@{/entradas/{indice}/temporadas(indice=${indice})}" method="post" class="d-inline-flex gap-1 ms-2">
-        <input type="number" name="numeroEpisodios" class="form-control form-control-sm" style="width: 80px;" placeholder="Nº unid." min="1" required/>
-        <button type="submit" class="btn btn-secondary btn-sm">+ Temporada</button>
+      <form th:if="${entrada.tipo.tieneTemporadas} and ${entrada.temporadas.size()} > 1" th:action="@{/entradas/{indice}/temporadas/eliminar(indice=${indice})}" method="post" class="d-inline"
+            onsubmit="return confirm('¿Eliminar la última temporada? Se perderá todo su progreso.')">
+        <button type="submit" class="btn btn-outline-danger btn-sm">− Temporada</button>
       </form>
 
       <form th:if="${entrada.tipo.tieneTemporadas} and ${entrada.temporadas.size()} > 1" th:action="@{/entradas/{indice}/temporadas/eliminar(indice=${indice})}" method="post" class="d-inline">
