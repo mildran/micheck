@@ -77,7 +77,7 @@ public class EntradaController {
         entradaService.eliminar(id);
         return "redirect:/entradas";
     }
-
+    @Transactional
     @GetMapping("/{id}")
     public String detalle(@PathVariable Long id,
                           @RequestParam(required = false) Integer temporada,
