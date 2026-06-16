@@ -8,6 +8,7 @@ public class Entrada {
     private Categoria tipo;
     private String observaciones;
     private List<Temporada> temporadas = new ArrayList<>();
+    private boolean archivada;
 
     public Entrada() {
     }
@@ -40,6 +41,14 @@ public class Entrada {
 
     public void setObservaciones(String observaciones) {
         this.observaciones = observaciones;
+    }
+
+    public boolean isArchivada() {
+        return archivada;
+    }
+
+    public void setArchivada(boolean archivada) {
+        this.archivada = archivada;
     }
 
     public List<Temporada> getTemporadas() {

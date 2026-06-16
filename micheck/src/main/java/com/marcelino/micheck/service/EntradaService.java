@@ -65,11 +65,11 @@ public class EntradaService {
         }
     }
 
-    public void eliminarUltimoEpisodio(int indiceEntrada, int indiceTemporada) {
+    public void eliminarEpisodios(int indiceEntrada, int indiceTemporada, int cantidad) {
         Entrada entrada = entradas.get(indiceEntrada);
         Temporada temporada = entrada.getTemporadas().get(indiceTemporada);
         List<Episodio> episodios = temporada.getEpisodios();
-        if (!episodios.isEmpty()) {
+        for (int i = 0; i < cantidad && !episodios.isEmpty(); i++) {
             episodios.remove(episodios.size() - 1);
         }
     }
@@ -80,6 +80,34 @@ public class EntradaService {
         if (temporadas.size() > 1) {
             temporadas.remove(temporadas.size() - 1);
         }
+    }
+
+    public void archivar(int indice) {
+        entradas.get(indice).setArchivada(true);
+    }
+
+    public void restaurar(int indice) {
+        entradas.get(indice).setArchivada(false);
+    }
+
+    public List<Entrada> getActivas(Categoria categoria) {
+        List<Entrada> resultado = new ArrayList<>();
+        for (Entrada entrada : entradas) {
+            if (entrada.getTipo().equals(categoria) && !entrada.isArchivada()) {
+                resultado.add(entrada);
+            }
+        }
+        return resultado;
+    }
+
+    public List<Entrada> getArchivadas() {
+        List<Entrada> resultado = new ArrayList<>();
+        for (Entrada entrada : entradas) {
+            if (entrada.isArchivada()) {
+                resultado.add(entrada);
+            }
+        }
+        return resultado;
     }
 
 }

@@ -48,8 +48,11 @@ public class EntradaController {
 
         if (categoriaIndice >= 0) {
             Categoria categoriaSeleccionada = categoriaService.getTodos().get(categoriaIndice);
-            model.addAttribute("entradas", entradaService.getByCategoria(categoriaSeleccionada));
+            model.addAttribute("entradas", entradaService.getActivas(categoriaSeleccionada));
             model.addAttribute("categoriaSeleccionada", categoriaSeleccionada);
+        } else if (categoriaIndice == -2) {
+            model.addAttribute("entradas", entradaService.getArchivadas());
+            model.addAttribute("categoriaSeleccionada", null);
         } else {
             model.addAttribute("entradas", new ArrayList<>());
             model.addAttribute("categoriaSeleccionada", null);
@@ -111,8 +114,8 @@ public class EntradaController {
     }
 
     @PostMapping("/{indice}/temporadas/{tIndice}/episodios/eliminar")
-    public String eliminarUltimoEpisodio(@PathVariable int indice, @PathVariable int tIndice) {
-        entradaService.eliminarUltimoEpisodio(indice, tIndice);
+    public String eliminarEpisodios(@PathVariable int indice, @PathVariable int tIndice, @RequestParam int cantidad) {
+        entradaService.eliminarEpisodios(indice, tIndice, cantidad);
         return "redirect:/entradas/" + indice + "?temporada=" + tIndice;
     }
 
@@ -132,6 +135,18 @@ public class EntradaController {
     public String agregarCategoria(@ModelAttribute("categoria") com.marcelino.micheck.model.Categoria categoria) {
         categoriaService.agregar(categoria);
         return "redirect:/entradas";
+    }
+
+    @PostMapping("/{indice}/archivar")
+    public String archivar(@PathVariable int indice) {
+        entradaService.archivar(indice);
+        return "redirect:/entradas";
+    }
+
+    @PostMapping("/{indice}/restaurar")
+    public String restaurar(@PathVariable int indice) {
+        entradaService.restaurar(indice);
+        return "redirect:/entradas?categoriaIndice=-2";
     }
 
 }

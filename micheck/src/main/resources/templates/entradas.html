@@ -1,145 +1,173 @@
 <!DOCTYPE html>
-  <html xmlns:th="http://www.thymeleaf.org"
-        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        layout:decorate="~{layout}">
-  <head>
-    <title>MiCheck - Entradas</title>
-  </head>
-  <body>
-  <div layout:fragment="content">
-    <h2 class="mb-4">Entradas</h2>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <title>MiCheck - Entradas</title>
+</head>
+<body>
+<div layout:fragment="content">
+  <h2 class="mb-4">Entradas</h2>
 
-    <!-- Pestañas por categoría -->
-    <ul class="nav nav-tabs mb-4">
-      <li class="nav-item">
-        <a class="nav-link" th:classappend="${categoriaIndice != null and categoriaIndice == -1} ? 'active' : ''"
-           th:href="@{/entradas(categoriaIndice=-1)}">+ Categoría</a>
-      </li>
-      <li class="nav-item" th:each="categoria, i : ${categorias}">
-        <a class="nav-link" th:classappend="${categoriaIndice == i.index} ? 'active' : ''"
-           th:href="@{/entradas(categoriaIndice=${i.index})}"
-           th:text="${categoria.nombre}">
-        </a>
-      </li>
-    </ul>
+  <!-- Pestañas por categoría -->
+  <ul class="nav nav-tabs mb-4">
+    <li class="nav-item">
+      <a class="nav-link" th:classappend="${categoriaIndice != null and categoriaIndice == -1} ? 'active' : ''"
+         th:href="@{/entradas(categoriaIndice=-1)}">+ Categoría</a>
+    </li>
+    <li class="nav-item" th:each="categoria, i : ${categorias}">
+      <a class="nav-link" th:classappend="${categoriaIndice == i.index} ? 'active' : ''"
+         th:href="@{/entradas(categoriaIndice=${i.index})}"
+         th:text="${categoria.nombre}">
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" th:classappend="${categoriaIndice == -2} ? 'active' : ''"
+         th:href="@{/entradas(categoriaIndice=-2)}">📦 Histórico</a>
+    </li>
+  </ul>
 
-    <!-- Formulario nueva categoría (solo en la pestaña +Categoría) -->
-    <div class="card mb-4" th:if="${categoriaIndice != null and categoriaIndice == -1}">
-      <div class="card-body">
-        <h5 class="card-title">Nueva Categoría</h5>
-        <form th:action="@{/entradas/categorias}" th:object="${categoria}" method="post" class="row g-3 align-items-end">
-          <div class="col-12 col-sm-6 col-md-4">
-            <label class="form-label text-nowrap">Nombre de la categoría</label>
-            <input type="text" th:field="*{nombre}" class="form-control" placeholder="Ej: Serie, Comic..."/>
-          </div>
-          <div class="col-12 col-sm-6 col-md-4">
-            <label class="form-label text-nowrap">Nombre de la unidad</label>
-            <input type="text" th:field="*{nombreUnidad}" class="form-control" placeholder="Ej: Episodio, Tomo..."/>
-          </div>
-          <div class="col-12 col-sm-6 col-md-4">
-            <label class="form-label text-nowrap">¿Tiene temporadas?</label>
-            <div class="form-control d-flex align-items-center">
-              <div class="form-check mb-0">
-                <input type="checkbox" th:field="*{tieneTemporadas}" class="form-check-input" id="tieneTemporadas"/>
-                <label class="form-check-label" for="tieneTemporadas">Sí</label>
-              </div>
+  <!-- Formulario nueva categoría (solo en la pestaña +Categoría) -->
+  <div class="card mb-4" th:if="${categoriaIndice != null and categoriaIndice == -1}">
+    <div class="card-body">
+      <h5 class="card-title">Nueva Categoría</h5>
+      <form th:action="@{/entradas/categorias}" th:object="${categoria}" method="post" class="row g-3 align-items-end">
+        <div class="col-12 col-sm-6 col-md-4">
+          <label class="form-label text-nowrap">Nombre de la categoría</label>
+          <input type="text" th:field="*{nombre}" class="form-control" placeholder="Ej: Serie, Comic..."/>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4">
+          <label class="form-label text-nowrap">Nombre de la unidad</label>
+          <input type="text" th:field="*{nombreUnidad}" class="form-control" placeholder="Ej: Episodio, Tomo..."/>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4">
+          <label class="form-label text-nowrap">¿Tiene temporadas?</label>
+          <div class="form-control d-flex align-items-center">
+            <div class="form-check mb-0">
+              <input type="checkbox" th:field="*{tieneTemporadas}" class="form-check-input" id="tieneTemporadas"/>
+              <label class="form-check-label" for="tieneTemporadas">Sí</label>
             </div>
           </div>
-          <div class="col-12">
-            <button type="submit" class="btn btn-primary">Añadir Categoría</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <ul class="list-group mb-4" th:if="${categoriaIndice != null and categoriaIndice == -1}">
-      <li class="list-group-item d-flex justify-content-between align-items-center"
-          th:each="cat, i : ${categorias}">
-        <div>
-          <strong th:text="${cat.nombre}"></strong> -
-          <span th:text="${cat.tieneTemporadas} ? 'Con temporadas' : 'Sin temporadas'"></span> -
-          <span th:text="${cat.nombreUnidad}"></span>
         </div>
-        <a th:href="@{/categorias/eliminar/{indice}(indice=${i.index})}" class="btn btn-danger btn-sm"
-           onclick="return confirm('¿Seguro que quieres eliminar esta categoría?')">Eliminar</a>
-      </li>
-    </ul>
-
-    <!-- Formulario nueva entrada -->
-    <div class="card mb-4" th:if="${categoriaIndice != null and categoriaIndice >= 0}">
-      <div class="card-body">
-        <h5 class="card-title">Nueva Entrada</h5>
-        <form th:action="@{/entradas}" th:object="${entrada}" method="post" class="row g-3">
-          <div class="col-12 col-sm-6 col-md-3">
-            <label class="form-label text-nowrap">Categoría</label>
-            <select th:field="*{tipo}" class="form-select" id="selectCategoria" onchange="actualizarLabelUnidad()">
-              <option value="">-- Categoría --</option>
-              <option th:each="categoria, i : ${categorias}"
-                      th:value="${i.index}"
-                      th:text="${categoria.nombre}"
-                      th:attr="data-unidad=${categoria.nombreUnidad}">
-              </option>
-            </select>
-          </div>
-          <div class="col-12 col-sm-6 col-md-3">
-            <label class="form-label text-nowrap">Nombre</label>
-            <input type="text" th:field="*{nombre}" class="form-control" placeholder="Ej: Breaking Bad"/>
-          </div>
-          <div class="col-6 col-sm-3 col-md-2">
-            <label class="form-label text-nowrap">Temporada</label>
-            <input type="number" name="numeroTemporada" value="1" class="form-control"/>
-          </div>
-          <div class="col-6 col-sm-3 col-md-3">
-            <label class="form-label text-nowrap" id="labelNumeroUnidades">Nº unidades</label>
-            <input type="number" name="numeroUnidades" class="form-control"/>
-          </div>
-
-          <div class="col-12">
-            <label class="form-label">Observaciones</label>
-            <input type="text" th:field="*{observaciones}" class="form-control" placeholder="Notas, valoración personal..."/>
-          </div>
-          <div class="col-12 col-md-2">
-            <button type="submit" class="btn btn-primary w-100">Añadir</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Lista de entradas -->
-    <div class="row row-cols-1 row-cols-md-3 g-3" th:if="${categoriaIndice != null and categoriaIndice >= 0}">
-      <div class="col" th:each="entrada, i : ${entradas}">
-        <div class="card h-100">
-          <div class="card-body">
-            <h5 class="card-title" th:text="${entrada.nombre}"></h5>
-            <p class="card-text">
-              <span class="badge bg-primary" th:text="${entrada.tipo.nombre}"></span>
-              <span th:if="${entrada.tipo.tieneTemporadas}" th:text="' · ' + ${entrada.temporadas.size()} + ' temporada(s)'"></span>
-              <br/>
-              <small th:text="${entrada.totalUnidades} + ' ' + ${entrada.tipo.nombreUnidad} + 's en total'"></small>
-              <br/>
-              <small class="text-muted" th:text="${entrada.observaciones}"></small>
-            </p>
-          </div>
-          <div class="card-footer">
-            <a th:href="@{/entradas/{indice}(indice=${i.index})}" class="btn btn-primary btn-sm me-2">Ver</a>
-            <a th:href="@{/entradas/eliminar/{indice}(indice=${i.index})}" class="btn btn-danger btn-sm"
-               onclick="return confirm('¿Seguro que quieres eliminar esta entrada? Se perderá todo su progreso.')">Eliminar</a>
-          </div>
+        <div class="col-12">
+          <button type="submit" class="btn btn-primary">Añadir Categoría</button>
         </div>
-      </div>
+      </form>
     </div>
-
-    <script>
-      function actualizarLabelUnidad() {
-        const select = document.getElementById('selectCategoria');
-        const label = document.getElementById('labelNumeroUnidades');
-        if (!select || !label) return;
-        const opcion = select.options[select.selectedIndex];
-        const unidad = opcion.getAttribute('data-unidad');
-        label.textContent = unidad ? ('Nº ' + unidad + 's') : 'Nº unidades';
-      }
-      actualizarLabelUnidad();
-    </script>
   </div>
-  </body>
+
+  <ul class="list-group mb-4" th:if="${categoriaIndice != null and categoriaIndice == -1}">
+    <li class="list-group-item d-flex justify-content-between align-items-center"
+        th:each="cat, i : ${categorias}">
+      <div>
+        <strong th:text="${cat.nombre}"></strong> -
+        <span th:text="${cat.tieneTemporadas} ? 'Con temporadas' : 'Sin temporadas'"></span> -
+        <span th:text="${cat.nombreUnidad}"></span>
+      </div>
+      <a th:href="@{/categorias/eliminar/{indice}(indice=${i.index})}" class="btn btn-danger btn-sm"
+         onclick="return confirm('¿Seguro que quieres eliminar esta categoría?')">Eliminar</a>
+    </li>
+  </ul>
+
+  <!-- Formulario nueva entrada -->
+  <div class="card mb-4" th:if="${categoriaIndice != null and categoriaIndice >= 0}">
+    <div class="card-body">
+      <h5 class="card-title">Nueva Entrada</h5>
+      <form th:action="@{/entradas}" th:object="${entrada}" method="post" class="row g-3">
+        <div class="col-12 col-sm-6 col-md-3">
+          <label class="form-label text-nowrap">Categoría</label>
+          <select th:field="*{tipo}" class="form-select" id="selectCategoria" onchange="actualizarLabelUnidad()">
+            <option value="">-- Categoría --</option>
+            <option th:each="categoria, i : ${categorias}"
+                    th:value="${i.index}"
+                    th:text="${categoria.nombre}"
+                    th:attr="data-unidad=${categoria.nombreUnidad}">
+            </option>
+          </select>
+        </div>
+        <div class="col-12 col-sm-6 col-md-3">
+          <label class="form-label text-nowrap">Nombre</label>
+          <input type="text" th:field="*{nombre}" class="form-control" placeholder="Ej: Breaking Bad"/>
+        </div>
+        <div class="col-6 col-sm-3 col-md-2">
+          <label class="form-label text-nowrap">Temporada</label>
+          <input type="number" name="numeroTemporada" value="1" class="form-control"/>
+        </div>
+        <div class="col-6 col-sm-3 col-md-3">
+          <label class="form-label text-nowrap" id="labelNumeroUnidades">Nº unidades</label>
+          <input type="number" name="numeroUnidades" class="form-control"/>
+        </div>
+        <div class="col-12">
+          <label class="form-label">Observaciones</label>
+          <input type="text" th:field="*{observaciones}" class="form-control" placeholder="Notas, valoración personal..."/>
+        </div>
+        <div class="col-12 col-md-2">
+          <button type="submit" class="btn btn-primary w-100">Añadir</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Lista de entradas activas -->
+  <div class="row row-cols-1 row-cols-md-3 g-3" th:if="${categoriaIndice != null and categoriaIndice >= 0}">
+    <div class="col" th:each="entrada, i : ${entradas}">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title" th:text="${entrada.nombre}"></h5>
+          <p class="card-text">
+            <span class="badge bg-primary" th:text="${entrada.tipo.nombre}"></span>
+            <span th:if="${entrada.tipo.tieneTemporadas}" th:text="' · ' + ${entrada.temporadas.size()} + ' temporada(s)'"></span>
+            <br/>
+            <small th:text="${entrada.totalUnidades} + ' ' + ${entrada.tipo.nombreUnidad} + 's en total'"></small>
+            <br/>
+            <small class="text-muted" th:text="${entrada.observaciones}"></small>
+          </p>
+        </div>
+        <div class="card-footer">
+          <a th:href="@{/entradas/{indice}(indice=${i.index})}" class="btn btn-primary btn-sm me-2">Ver</a>
+          <a th:href="@{/entradas/eliminar/{indice}(indice=${i.index})}" class="btn btn-danger btn-sm"
+             onclick="return confirm('¿Seguro que quieres eliminar esta entrada? Se perderá todo su progreso.')">Eliminar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Histórico -->
+  <div class="row row-cols-1 row-cols-md-3 g-3" th:if="${categoriaIndice == -2}">
+    <div class="col" th:each="entrada, i : ${entradas}">
+      <div class="card h-100 border-secondary">
+        <div class="card-body">
+          <h5 class="card-title text-muted" th:text="${entrada.nombre}"></h5>
+          <p class="card-text">
+            <span class="badge bg-secondary" th:text="${entrada.tipo.nombre}"></span>
+            <br/>
+            <small th:text="${entrada.totalUnidades} + ' ' + ${entrada.tipo.nombreUnidad} + 's en total'"></small>
+            <br/>
+            <small class="text-muted" th:text="${entrada.observaciones}"></small>
+          </p>
+        </div>
+        <div class="card-footer">
+          <form th:action="@{/entradas/{indice}/restaurar(indice=${i.index})}" method="post" class="d-inline">
+            <button type="submit" class="btn btn-success btn-sm">Restaurar</button>
+          </form>
+          <a th:href="@{/entradas/eliminar/{indice}(indice=${i.index})}" class="btn btn-danger btn-sm"
+             onclick="return confirm('¿Eliminar definitivamente esta entrada?')">Eliminar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function actualizarLabelUnidad() {
+      const select = document.getElementById('selectCategoria');
+      const label = document.getElementById('labelNumeroUnidades');
+      if (!select || !label) return;
+      const opcion = select.options[select.selectedIndex];
+      const unidad = opcion.getAttribute('data-unidad');
+      label.textContent = unidad ? ('Nº ' + unidad + 's') : 'Nº unidades';
+    }
+    actualizarLabelUnidad();
+  </script>
+</div>
+</body>
 </html>
