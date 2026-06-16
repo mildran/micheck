@@ -37,8 +37,8 @@ public class EntradaController {
         }
 
         model.addAttribute("categorias", categoriaService.getTodos());
-        model.addAttribute("categorias", categoriaService.getTodos());
         model.addAttribute("categoriaIndice", categoriaIndice);
+        model.addAttribute("categoria", new Categoria());
 
         Entrada nuevaEntrada = new Entrada();
         if (categoriaIndice >= 0 && categoriaIndice < categoriaService.getTodos().size()) {
@@ -46,7 +46,7 @@ public class EntradaController {
         }
         model.addAttribute("entrada", nuevaEntrada);
 
-        if (categoriaIndice != null && categoriaIndice >= 0) {
+        if (categoriaIndice >= 0) {
             Categoria categoriaSeleccionada = categoriaService.getTodos().get(categoriaIndice);
             model.addAttribute("entradas", entradaService.getByCategoria(categoriaSeleccionada));
             model.addAttribute("categoriaSeleccionada", categoriaSeleccionada);
