@@ -19,7 +19,12 @@ public class DataLoader implements CommandLineRunner {
     }
 
     @Override
+    @org.springframework.transaction.annotation.Transactional
     public void run(String... args) {
+        if (!categoriaService.getTodos().isEmpty()) {
+            return;
+        }
+
         // Crear categorías
         Categoria serie = new Categoria("Serie", true, "Episodio");
         Categoria comic = new Categoria("Comic", false, "Tomo");
@@ -31,7 +36,7 @@ public class DataLoader implements CommandLineRunner {
         // Crear entradas
         Entrada entrada1 = new Entrada("Breaking Bad", serie, "Muy buena");
         entradaService.agregar(entrada1, 1, 7);
-        entradaService.agregarTemporada(0, 13); // Temporada 2 con 13 episodios
+        entradaService.agregarTemporada(entrada1.getId(), 13);
 
         Entrada entrada2 = new Entrada("One Piece", comic, "Manga japonés");
         entradaService.agregar(entrada2, 1, 10);

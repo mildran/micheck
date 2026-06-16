@@ -64,7 +64,7 @@
         <span th:text="${cat.tieneTemporadas} ? 'Con temporadas' : 'Sin temporadas'"></span> -
         <span th:text="${cat.nombreUnidad}"></span>
       </div>
-      <a th:href="@{/categorias/eliminar/{indice}(indice=${i.index})}" class="btn btn-danger btn-sm"
+      <a th:href="@{/categorias/eliminar/{id}(id=${cat.id})}" class="btn btn-danger btn-sm"
          onclick="return confirm('¿Seguro que quieres eliminar esta categoría?')">Eliminar</a>
     </li>
   </ul>
@@ -78,8 +78,8 @@
           <label class="form-label text-nowrap">Categoría</label>
           <select th:field="*{tipo}" class="form-select" id="selectCategoria" onchange="actualizarLabelUnidad()">
             <option value="">-- Categoría --</option>
-            <option th:each="categoria, i : ${categorias}"
-                    th:value="${i.index}"
+            <option th:each="categoria : ${categorias}"
+                    th:value="${categoria.id}"
                     th:text="${categoria.nombre}"
                     th:attr="data-unidad=${categoria.nombreUnidad}">
             </option>
@@ -124,8 +124,8 @@
           </p>
         </div>
         <div class="card-footer">
-          <a th:href="@{/entradas/{indice}(indice=${i.index})}" class="btn btn-primary btn-sm me-2">Ver</a>
-          <a th:href="@{/entradas/eliminar/{indice}(indice=${i.index})}" class="btn btn-danger btn-sm"
+          <a th:href="@{/entradas/{id}(id=${entrada.id})}" class="btn btn-primary btn-sm me-2">Ver</a>
+          <a th:href="@{/entradas/eliminar/{id}(id=${entrada.id})}" class="btn btn-danger btn-sm"
              onclick="return confirm('¿Seguro que quieres eliminar esta entrada? Se perderá todo su progreso.')">Eliminar</a>
         </div>
       </div>
@@ -147,10 +147,10 @@
           </p>
         </div>
         <div class="card-footer">
-          <form th:action="@{/entradas/{indice}/restaurar(indice=${i.index})}" method="post" class="d-inline">
+          <form th:action="@{/entradas/{id}/restaurar(id=${entrada.id})}" method="post" class="d-inline">
             <button type="submit" class="btn btn-success btn-sm">Restaurar</button>
           </form>
-          <a th:href="@{/entradas/eliminar/{indice}(indice=${i.index})}" class="btn btn-danger btn-sm"
+          <a th:href="@{/entradas/eliminar/{id}(id=${entrada.id})}" class="btn btn-danger btn-sm"
              onclick="return confirm('¿Eliminar definitivamente esta entrada?')">Eliminar</a>
         </div>
       </div>

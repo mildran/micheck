@@ -29,10 +29,10 @@ public class CategoriaController {
         return "redirect:/categorias";
     }
 
-    @GetMapping("/eliminar/{indice}")
-    public String eliminar(@PathVariable int indice) {
-        categoriaService.eliminar(indice);
-        return "redirect:/categorias";
+    @GetMapping("/eliminar/{id}")
+    public String eliminar(@PathVariable Long id) {
+        categoriaService.eliminar(id);
+        return "redirect:/entradas?categoriaIndice=-1";
     }
 
 }

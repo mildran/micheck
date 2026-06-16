@@ -1,8 +1,9 @@
 package com.marcelino.micheck.controller;
 
+import org.springframework.transaction.annotation.Transactional;
 import com.marcelino.micheck.model.Entrada;
-import com.marcelino.micheck.model.Episodio;
 import com.marcelino.micheck.model.Categoria;
+import com.marcelino.micheck.model.Episodio;
 import com.marcelino.micheck.service.EntradaService;
 import com.marcelino.micheck.service.CategoriaService;
 import org.springframework.stereotype.Controller;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/entradas")
@@ -26,28 +26,31 @@ public class EntradaController {
         this.categoriaService = categoriaService;
     }
 
+    @Transactional
     @GetMapping
     public String listar(@RequestParam(required = false) Integer categoriaIndice, Model model) {
+        List<Categoria> categorias = categoriaService.getTodos();
+
         if (categoriaIndice == null) {
-            if (categoriaService.getTodos().isEmpty()) {
+            if (categorias.isEmpty()) {
                 categoriaIndice = -1;
             } else {
                 categoriaIndice = 0;
             }
         }
 
-        model.addAttribute("categorias", categoriaService.getTodos());
+        model.addAttribute("categorias", categorias);
         model.addAttribute("categoriaIndice", categoriaIndice);
         model.addAttribute("categoria", new Categoria());
 
         Entrada nuevaEntrada = new Entrada();
-        if (categoriaIndice >= 0 && categoriaIndice < categoriaService.getTodos().size()) {
-            nuevaEntrada.setTipo(categoriaService.getTodos().get(categoriaIndice));
+        if (categoriaIndice >= 0 && categoriaIndice < categorias.size()) {
+            nuevaEntrada.setTipo(categorias.get(categoriaIndice));
         }
         model.addAttribute("entrada", nuevaEntrada);
 
-        if (categoriaIndice >= 0) {
-            Categoria categoriaSeleccionada = categoriaService.getTodos().get(categoriaIndice);
+        if (categoriaIndice >= 0 && categoriaIndice < categorias.size()) {
+            Categoria categoriaSeleccionada = categorias.get(categoriaIndice);
             model.addAttribute("entradas", entradaService.getActivas(categoriaSeleccionada));
             model.addAttribute("categoriaSeleccionada", categoriaSeleccionada);
         } else if (categoriaIndice == -2) {
@@ -69,19 +72,19 @@ public class EntradaController {
         return "redirect:/entradas";
     }
 
-    @GetMapping("/eliminar/{indice}")
-    public String eliminar(@PathVariable int indice) {
-        entradaService.eliminar(indice);
+    @GetMapping("/eliminar/{id}")
+    public String eliminar(@PathVariable Long id) {
+        entradaService.eliminar(id);
         return "redirect:/entradas";
     }
 
-    @GetMapping("/{indice}")
-    public String detalle(@PathVariable int indice,
+    @GetMapping("/{id}")
+    public String detalle(@PathVariable Long id,
                           @RequestParam(required = false) Integer temporada,
                           Model model) {
-        Entrada entrada = entradaService.getEntrada(indice);
+        Entrada entrada = entradaService.getEntrada(id);
         model.addAttribute("entrada", entrada);
-        model.addAttribute("indice", indice);
+        model.addAttribute("id", id);
 
         int tIndice = (temporada != null) ? temporada : entrada.getTemporadas().size() - 1;
         model.addAttribute("tIndice", tIndice);
@@ -93,60 +96,57 @@ public class EntradaController {
         return "detalle";
     }
 
-    @PostMapping("/{indice}/temporadas/{tIndice}/episodios/{eIndice}")
-    public String marcarEpisodio(@PathVariable int indice, @PathVariable int tIndice, @PathVariable int eIndice) {
-        Entrada entrada = entradaService.getEntrada(indice);
-        Episodio episodio = entrada.getTemporadas().get(tIndice).getEpisodios().get(eIndice);
-        episodio.setVisto(!episodio.isVisto());
-        return "redirect:/entradas/" + indice;
+    @PostMapping("/{id}/temporadas/{tIndice}/episodios/{eIndice}")
+    public String marcarEpisodio(@PathVariable Long id, @PathVariable int tIndice, @PathVariable int eIndice) {
+        entradaService.marcarEpisodio(id, tIndice, eIndice);
+        return "redirect:/entradas/" + id;
     }
 
-    @PostMapping("/{indice}/temporadas")
-    public String agregarTemporada(@PathVariable int indice, @RequestParam int numeroEpisodios) {
-        entradaService.agregarTemporada(indice, numeroEpisodios);
-        return "redirect:/entradas/" + indice;
+    @PostMapping("/{id}/temporadas")
+    public String agregarTemporada(@PathVariable Long id, @RequestParam int numeroEpisodios) {
+        entradaService.agregarTemporada(id, numeroEpisodios);
+        return "redirect:/entradas/" + id;
     }
 
-    @PostMapping("/{indice}/temporadas/{tIndice}/episodios")
-    public String agregarEpisodios(@PathVariable int indice, @PathVariable int tIndice, @RequestParam int cantidad) {
-        entradaService.agregarEpisodios(indice, tIndice, cantidad);
-        return "redirect:/entradas/" + indice;
+    @PostMapping("/{id}/temporadas/{tIndice}/episodios")
+    public String agregarEpisodios(@PathVariable Long id, @PathVariable int tIndice, @RequestParam int cantidad) {
+        entradaService.agregarEpisodios(id, tIndice, cantidad);
+        return "redirect:/entradas/" + id;
     }
 
-    @PostMapping("/{indice}/temporadas/{tIndice}/episodios/eliminar")
-    public String eliminarEpisodios(@PathVariable int indice, @PathVariable int tIndice, @RequestParam int cantidad) {
-        entradaService.eliminarEpisodios(indice, tIndice, cantidad);
-        return "redirect:/entradas/" + indice + "?temporada=" + tIndice;
+    @PostMapping("/{id}/temporadas/{tIndice}/episodios/eliminar")
+    public String eliminarEpisodios(@PathVariable Long id, @PathVariable int tIndice, @RequestParam int cantidad) {
+        entradaService.eliminarEpisodios(id, tIndice, cantidad);
+        return "redirect:/entradas/" + id + "?temporada=" + tIndice;
     }
 
-    @PostMapping("/{indice}/temporadas/eliminar")
-    public String eliminarUltimaTemporada(@PathVariable int indice) {
-        entradaService.eliminarUltimaTemporada(indice);
-        return "redirect:/entradas/" + indice;
+    @PostMapping("/{id}/temporadas/eliminar")
+    public String eliminarUltimaTemporada(@PathVariable Long id) {
+        entradaService.eliminarUltimaTemporada(id);
+        return "redirect:/entradas/" + id;
     }
 
-    @PostMapping("/{indice}/temporadas/{tIndice}/marcar-todos")
-    public String marcarTodos(@PathVariable int indice, @PathVariable int tIndice, @RequestParam boolean visto) {
-        entradaService.marcarTodos(indice, tIndice, visto);
-        return "redirect:/entradas/" + indice + "?temporada=" + tIndice;
+    @PostMapping("/{id}/temporadas/{tIndice}/marcar-todos")
+    public String marcarTodos(@PathVariable Long id, @PathVariable int tIndice, @RequestParam boolean visto) {
+        entradaService.marcarTodos(id, tIndice, visto);
+        return "redirect:/entradas/" + id + "?temporada=" + tIndice;
     }
 
     @PostMapping("/categorias")
-    public String agregarCategoria(@ModelAttribute("categoria") com.marcelino.micheck.model.Categoria categoria) {
+    public String agregarCategoria(@ModelAttribute("categoria") Categoria categoria) {
         categoriaService.agregar(categoria);
         return "redirect:/entradas";
     }
 
-    @PostMapping("/{indice}/archivar")
-    public String archivar(@PathVariable int indice) {
-        entradaService.archivar(indice);
+    @PostMapping("/{id}/archivar")
+    public String archivar(@PathVariable Long id) {
+        entradaService.archivar(id);
         return "redirect:/entradas";
     }
 
-    @PostMapping("/{indice}/restaurar")
-    public String restaurar(@PathVariable int indice) {
-        entradaService.restaurar(indice);
+    @PostMapping("/{id}/restaurar")
+    public String restaurar(@PathVariable Long id) {
+        entradaService.restaurar(id);
         return "redirect:/entradas?categoriaIndice=-2";
     }
-
 }

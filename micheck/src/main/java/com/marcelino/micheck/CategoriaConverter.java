@@ -15,11 +15,11 @@ public class CategoriaConverter implements Converter<String, Categoria> {
     }
 
     @Override
-    public Categoria convert(String indice) {
-        if (indice.isEmpty()) {
+    public Categoria convert(String id) {
+        if (id.isEmpty()) {
             return null;
         }
-        return categoriaService.getTodos().get(Integer.parseInt(indice));
+        return categoriaService.getById(Long.parseLong(id));
     }
 
 }

@@ -1,26 +1,33 @@
 package com.marcelino.micheck.service;
 
 import com.marcelino.micheck.model.Categoria;
+import com.marcelino.micheck.repository.CategoriaRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class CategoriaService {
 
-    private List<Categoria> categorias = new ArrayList<>();
+    private final CategoriaRepository categoriaRepository;
+
+    public CategoriaService(CategoriaRepository categoriaRepository) {
+        this.categoriaRepository = categoriaRepository;
+    }
 
     public List<Categoria> getTodos() {
-        return categorias;
+        return categoriaRepository.findAll();
     }
 
     public void agregar(Categoria categoria) {
-        categorias.add(categoria);
+        categoriaRepository.save(categoria);
     }
 
-    public void eliminar(int indice) {
-        categorias.remove(indice);
+    public void eliminar(Long id) {
+        categoriaRepository.deleteById(id);
     }
 
+    public Categoria getById(Long id) {
+        return categoriaRepository.findById(id).orElse(null);
+    }
 }

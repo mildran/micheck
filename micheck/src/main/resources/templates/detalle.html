@@ -16,18 +16,18 @@
     </div>
     <div class="d-flex gap-2">
       <a href="/entradas" class="btn btn-outline-secondary">← Volver</a>
-      <form th:action="@{/entradas/{indice}/archivar(indice=${indice})}" method="post" class="d-inline"
+      <form th:action="@{/entradas/{id}/archivar(id=${id})}" method="post" class="d-inline"
             onsubmit="return confirm('¿Archivar esta entrada? Pasará al histórico.')">
         <button type="submit" class="btn btn-warning">Archivar</button>
       </form>
     </div>
   </div>
 
-  <!-- Pestañas por temporada, solo si la categoría tiene temporadas -->
+  <!-- Pestañas por temporada -->
   <ul class="nav nav-tabs mb-3" th:if="${entrada.tipo.tieneTemporadas}">
     <li class="nav-item" th:each="t, i : ${entrada.temporadas}">
       <a class="nav-link" th:classappend="${i.index == tIndice} ? 'active' : ''"
-         th:href="@{/entradas/{indice}(indice=${indice}, temporada=${i.index})}"
+         th:href="@{/entradas/{id}(id=${id}, temporada=${i.index})}"
          th:text="'Temporada ' + ${t.numero}">
       </a>
     </li>
@@ -35,34 +35,34 @@
 
   <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <div>
-      <form th:action="@{/entradas/{indice}/temporadas/{tIndice}/marcar-todos(indice=${indice}, tIndice=${tIndice})}" method="post" class="d-inline">
+      <form th:action="@{/entradas/{id}/temporadas/{tIndice}/marcar-todos(id=${id}, tIndice=${tIndice})}" method="post" class="d-inline">
         <input type="hidden" name="visto" value="true"/>
         <button type="submit" class="btn btn-success btn-sm">Marcar todo</button>
       </form>
-      <form th:action="@{/entradas/{indice}/temporadas/{tIndice}/marcar-todos(indice=${indice}, tIndice=${tIndice})}" method="post" class="d-inline">
+      <form th:action="@{/entradas/{id}/temporadas/{tIndice}/marcar-todos(id=${id}, tIndice=${tIndice})}" method="post" class="d-inline">
         <input type="hidden" name="visto" value="false"/>
         <button type="submit" class="btn btn-outline-secondary btn-sm">Desmarcar todo</button>
       </form>
     </div>
 
     <div>
-      <form th:action="@{/entradas/{indice}/temporadas/{tIndice}/episodios(indice=${indice}, tIndice=${tIndice})}" method="post" class="d-inline-flex gap-1">
+      <form th:action="@{/entradas/{id}/temporadas/{tIndice}/episodios(id=${id}, tIndice=${tIndice})}" method="post" class="d-inline-flex gap-1">
         <input type="number" name="cantidad" class="form-control form-control-sm" style="width: 80px;" placeholder="Cantidad" min="1" required/>
         <button type="submit" class="btn btn-primary btn-sm" th:text="'+ ' + ${entrada.tipo.nombreUnidad} + 's'"></button>
       </form>
 
-      <form th:action="@{/entradas/{indice}/temporadas/{tIndice}/episodios/eliminar(indice=${indice}, tIndice=${tIndice})}" method="post" class="d-inline-flex gap-1"
+      <form th:action="@{/entradas/{id}/temporadas/{tIndice}/episodios/eliminar(id=${id}, tIndice=${tIndice})}" method="post" class="d-inline-flex gap-1"
             onsubmit="return confirm('¿Eliminar los últimos episodios?')">
         <input type="number" name="cantidad" value="1" class="form-control form-control-sm" style="width: 80px;" min="1" required/>
         <button type="submit" class="btn btn-outline-danger btn-sm" th:text="'− ' + ${entrada.tipo.nombreUnidad} + 's'"></button>
       </form>
 
-      <form th:if="${entrada.tipo.tieneTemporadas}" th:action="@{/entradas/{indice}/temporadas(indice=${indice})}" method="post" class="d-inline-flex gap-1 ms-2">
+      <form th:if="${entrada.tipo.tieneTemporadas}" th:action="@{/entradas/{id}/temporadas(id=${id})}" method="post" class="d-inline-flex gap-1 ms-2">
         <input type="number" name="numeroEpisodios" class="form-control form-control-sm" style="width: 80px;" placeholder="Nº unid." min="1" required/>
         <button type="submit" class="btn btn-secondary btn-sm">+ Temporada</button>
       </form>
 
-      <form th:if="${entrada.tipo.tieneTemporadas} and ${entrada.temporadas.size()} > 1" th:action="@{/entradas/{indice}/temporadas/eliminar(indice=${indice})}" method="post" class="d-inline"
+      <form th:if="${entrada.tipo.tieneTemporadas} and ${entrada.temporadas.size()} > 1" th:action="@{/entradas/{id}/temporadas/eliminar(id=${id})}" method="post" class="d-inline"
             onsubmit="return confirm('¿Eliminar la última temporada? Se perderá todo su progreso.')">
         <button type="submit" class="btn btn-outline-danger btn-sm">− Temporada</button>
       </form>
@@ -71,7 +71,7 @@
 
   <div class="row">
     <div class="col-md-3 mb-2" th:each="episodio : ${episodios}">
-      <form th:action="@{/entradas/{indice}/temporadas/{tIndice}/episodios/{eIndice}(indice=${indice}, tIndice=${tIndice}, eIndice=${episodio.numero - 1})}" method="post">
+      <form th:action="@{/entradas/{id}/temporadas/{tIndice}/episodios/{eIndice}(id=${id}, tIndice=${tIndice}, eIndice=${episodio.numero - 1})}" method="post">
         <div class="card" th:classappend="${episodio.visto} ? 'border-success bg-success bg-opacity-10' : ''">
           <div class="card-body d-flex align-items-center">
             <input type="checkbox"

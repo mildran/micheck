@@ -1,113 +1,107 @@
 package com.marcelino.micheck.service;
 
-import com.marcelino.micheck.model.Entrada;
-import com.marcelino.micheck.model.Episodio;
-import com.marcelino.micheck.model.Categoria;
-import com.marcelino.micheck.model.Temporada;
+import com.marcelino.micheck.model.*;
+import com.marcelino.micheck.repository.EntradaRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class EntradaService {
 
-    private List<Entrada> entradas = new ArrayList<>();
+    private final EntradaRepository entradaRepository;
+
+    public EntradaService(EntradaRepository entradaRepository) {
+        this.entradaRepository = entradaRepository;
+    }
 
     public List<Entrada> getTodas() {
-        return entradas;
+        return entradaRepository.findAll();
     }
 
     public void agregar(Entrada entrada, int numeroTemporada, int numeroUnidades) {
         Temporada temporada = new Temporada(numeroTemporada, numeroUnidades);
         entrada.getTemporadas().add(temporada);
-        entradas.add(entrada);
+        entradaRepository.save(entrada);
     }
 
-    public void eliminar(int indice) {
-        entradas.remove(indice);
+    public void eliminar(Long id) {
+        entradaRepository.deleteById(id);
     }
 
-    public Entrada getEntrada(int indice) {
-        return entradas.get(indice);
+    public Entrada getEntrada(Long id) {
+        return entradaRepository.findById(id).orElse(null);
     }
 
-    public List<Entrada> getByCategoria(Categoria categoria) {
-        List<Entrada> resultado = new ArrayList<>();
-        for (Entrada entrada : entradas) {
-            if (entrada.getTipo().equals(categoria)) {
-                resultado.add(entrada);
-            }
-        }
-        return resultado;
+    public List<Entrada> getActivas(Categoria categoria) {
+        return entradaRepository.findByTipoAndArchivadaFalse(categoria);
     }
 
-    public void agregarTemporada(int indiceEntrada, int numeroEpisodios) {
-        Entrada entrada = entradas.get(indiceEntrada);
+    public List<Entrada> getArchivadas() {
+        return entradaRepository.findByArchivadaTrue();
+    }
+
+    public void agregarTemporada(Long idEntrada, int numeroEpisodios) {
+        Entrada entrada = getEntrada(idEntrada);
         int siguienteNumero = entrada.getTemporadas().size() + 1;
         entrada.getTemporadas().add(new Temporada(siguienteNumero, numeroEpisodios));
+        entradaRepository.save(entrada);
     }
 
-    public void agregarEpisodios(int indiceEntrada, int indiceTemporada, int cantidad) {
-        Entrada entrada = entradas.get(indiceEntrada);
-        Temporada temporada = entrada.getTemporadas().get(indiceTemporada);
-        int siguienteNumero = temporada.getEpisodios().size() + 1;
-        for (int i = 0; i < cantidad; i++) {
-            temporada.getEpisodios().add(new Episodio(siguienteNumero + i, false));
-        }
-    }
-
-    public void marcarTodos(int indiceEntrada, int indiceTemporada, boolean visto) {
-        Entrada entrada = entradas.get(indiceEntrada);
-        Temporada temporada = entrada.getTemporadas().get(indiceTemporada);
-        for (Episodio episodio : temporada.getEpisodios()) {
-            episodio.setVisto(visto);
-        }
-    }
-
-    public void eliminarEpisodios(int indiceEntrada, int indiceTemporada, int cantidad) {
-        Entrada entrada = entradas.get(indiceEntrada);
+    public void eliminarEpisodios(Long idEntrada, int indiceTemporada, int cantidad) {
+        Entrada entrada = getEntrada(idEntrada);
         Temporada temporada = entrada.getTemporadas().get(indiceTemporada);
         List<Episodio> episodios = temporada.getEpisodios();
         for (int i = 0; i < cantidad && !episodios.isEmpty(); i++) {
             episodios.remove(episodios.size() - 1);
         }
+        entradaRepository.save(entrada);
     }
 
-    public void eliminarUltimaTemporada(int indiceEntrada) {
-        Entrada entrada = entradas.get(indiceEntrada);
+    public void agregarEpisodios(Long idEntrada, int indiceTemporada, int cantidad) {
+        Entrada entrada = getEntrada(idEntrada);
+        Temporada temporada = entrada.getTemporadas().get(indiceTemporada);
+        int siguienteNumero = temporada.getEpisodios().size() + 1;
+        for (int i = 0; i < cantidad; i++) {
+            temporada.getEpisodios().add(new Episodio(siguienteNumero + i, false));
+        }
+        entradaRepository.save(entrada);
+    }
+
+    public void marcarTodos(Long idEntrada, int indiceTemporada, boolean visto) {
+        Entrada entrada = getEntrada(idEntrada);
+        Temporada temporada = entrada.getTemporadas().get(indiceTemporada);
+        for (Episodio episodio : temporada.getEpisodios()) {
+            episodio.setVisto(visto);
+        }
+        entradaRepository.save(entrada);
+    }
+
+    public void marcarEpisodio(Long idEntrada, int indiceTemporada, int indiceEpisodio) {
+        Entrada entrada = getEntrada(idEntrada);
+        Episodio episodio = entrada.getTemporadas().get(indiceTemporada).getEpisodios().get(indiceEpisodio);
+        episodio.setVisto(!episodio.isVisto());
+        entradaRepository.save(entrada);
+    }
+
+    public void eliminarUltimaTemporada(Long idEntrada) {
+        Entrada entrada = getEntrada(idEntrada);
         List<Temporada> temporadas = entrada.getTemporadas();
         if (temporadas.size() > 1) {
             temporadas.remove(temporadas.size() - 1);
         }
+        entradaRepository.save(entrada);
     }
 
-    public void archivar(int indice) {
-        entradas.get(indice).setArchivada(true);
+    public void archivar(Long id) {
+        Entrada entrada = getEntrada(id);
+        entrada.setArchivada(true);
+        entradaRepository.save(entrada);
     }
 
-    public void restaurar(int indice) {
-        entradas.get(indice).setArchivada(false);
+    public void restaurar(Long id) {
+        Entrada entrada = getEntrada(id);
+        entrada.setArchivada(false);
+        entradaRepository.save(entrada);
     }
-
-    public List<Entrada> getActivas(Categoria categoria) {
-        List<Entrada> resultado = new ArrayList<>();
-        for (Entrada entrada : entradas) {
-            if (entrada.getTipo().equals(categoria) && !entrada.isArchivada()) {
-                resultado.add(entrada);
-            }
-        }
-        return resultado;
-    }
-
-    public List<Entrada> getArchivadas() {
-        List<Entrada> resultado = new ArrayList<>();
-        for (Entrada entrada : entradas) {
-            if (entrada.isArchivada()) {
-                resultado.add(entrada);
-            }
-        }
-        return resultado;
-    }
-
 }
