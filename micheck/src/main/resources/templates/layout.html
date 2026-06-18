@@ -13,6 +13,7 @@
     <div class="container">
         <a class="navbar-brand" href="/">✅ MiCheck</a>
         <div class="d-flex align-items-center gap-2">
+            <span class="text-white me-2" sec:authorize="isAuthenticated()" sec:authentication="principal.nombre"></span>
             <a class="btn btn-outline-light" href="/entradas">Entradas</a>
             <a class="btn btn-outline-warning" href="/admin" sec:authorize="hasRole('ADMIN')">Admin</a>
             <form th:action="@{/logout}" method="post" class="d-inline" sec:authorize="isAuthenticated()">
