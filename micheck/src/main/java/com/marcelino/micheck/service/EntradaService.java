@@ -15,13 +15,10 @@ public class EntradaService {
         this.entradaRepository = entradaRepository;
     }
 
-    public List<Entrada> getTodas() {
-        return entradaRepository.findAll();
-    }
-
-    public void agregar(Entrada entrada, int numeroTemporada, int numeroUnidades) {
+    public void agregar(Entrada entrada, int numeroTemporada, int numeroUnidades, Usuario usuario) {
         Temporada temporada = new Temporada(numeroTemporada, numeroUnidades);
         entrada.getTemporadas().add(temporada);
+        entrada.setUsuario(usuario);
         entradaRepository.save(entrada);
     }
 
@@ -33,12 +30,12 @@ public class EntradaService {
         return entradaRepository.findById(id).orElse(null);
     }
 
-    public List<Entrada> getActivas(Categoria categoria) {
-        return entradaRepository.findByTipoAndArchivadaFalse(categoria);
+    public List<Entrada> getActivas(Categoria categoria, Usuario usuario) {
+        return entradaRepository.findByTipoAndArchivadaFalseAndUsuario(categoria, usuario);
     }
 
-    public List<Entrada> getArchivadas() {
-        return entradaRepository.findByArchivadaTrue();
+    public List<Entrada> getArchivadas(Usuario usuario) {
+        return entradaRepository.findByArchivadaTrueAndUsuario(usuario);
     }
 
     public void agregarTemporada(Long idEntrada, int numeroEpisodios) {

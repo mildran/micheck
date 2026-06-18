@@ -1,6 +1,7 @@
 package com.marcelino.micheck.service;
 
 import com.marcelino.micheck.model.Categoria;
+import com.marcelino.micheck.model.Usuario;
 import com.marcelino.micheck.repository.CategoriaRepository;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +16,12 @@ public class CategoriaService {
         this.categoriaRepository = categoriaRepository;
     }
 
-    public List<Categoria> getTodos() {
-        return categoriaRepository.findAll();
+    public List<Categoria> getTodos(Usuario usuario) {
+        return categoriaRepository.findByUsuario(usuario);
     }
 
-    public void agregar(Categoria categoria) {
+    public void agregar(Categoria categoria, Usuario usuario) {
+        categoria.setUsuario(usuario);
         categoriaRepository.save(categoria);
     }
 

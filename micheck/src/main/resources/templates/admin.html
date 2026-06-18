@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>MiCheck - Administración</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h2 class="mb-4">Panel de Administración</h2>
+
+    <!-- Estadísticas -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 th:text="${totalUsuarios}"></h3>
+                    <p class="text-muted">Usuarios totales</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 th:text="${pendientes.size()}"></h3>
+                    <p class="text-muted">Pendientes de aprobación</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 th:text="${aprobados.size()}"></h3>
+                    <p class="text-muted">Usuarios aprobados</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pendientes de aprobación -->
+    <h4 class="mb-3">Pendientes de aprobación</h4>
+    <div th:if="${pendientes.isEmpty()}" class="alert alert-info">No hay usuarios pendientes.</div>
+    <ul class="list-group mb-4">
+        <li class="list-group-item d-flex justify-content-between align-items-center"
+            th:each="usuario : ${pendientes}">
+            <div>
+                <strong th:text="${usuario.nombre}"></strong>
+                <small class="text-muted ms-2" th:text="${usuario.email}"></small>
+            </div>
+            <div>
+                <form th:action="@{/admin/aprobar/{id}(id=${usuario.id})}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-success btn-sm">Aprobar</button>
+                </form>
+                <form th:action="@{/admin/rechazar/{id}(id=${usuario.id})}" method="post" class="d-inline"
+                      onsubmit="return confirm('¿Rechazar y eliminar este usuario?')">
+                    <button type="submit" class="btn btn-danger btn-sm">Rechazar</button>
+                </form>
+            </div>
+        </li>
+    </ul>
+
+    <!-- Usuarios aprobados -->
+    <h4 class="mb-3">Usuarios aprobados</h4>
+    <div th:if="${aprobados.isEmpty()}" class="alert alert-info">No hay usuarios aprobados.</div>
+    <ul class="list-group">
+        <li class="list-group-item d-flex justify-content-between align-items-center"
+            th:each="usuario : ${aprobados}">
+            <div>
+                <strong th:text="${usuario.nombre}"></strong>
+                <small class="text-muted ms-2" th:text="${usuario.email}"></small>
+                <span class="badge bg-danger ms-2" th:if="${usuario.rol == 'ROLE_ADMIN'}">Admin</span>
+            </div>
+            <form th:action="@{/admin/hacer-admin/{id}(id=${usuario.id})}" method="post" class="d-inline"
+                  th:if="${usuario.rol != 'ROLE_ADMIN'}"
+                  onsubmit="return confirm('¿Hacer administrador a este usuario?')">
+                <button type="submit" class="btn btn-warning btn-sm">Hacer Admin</button>
+            </form>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

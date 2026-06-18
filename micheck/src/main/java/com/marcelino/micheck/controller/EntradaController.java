@@ -1,12 +1,16 @@
 package com.marcelino.micheck.controller;
 
-import org.springframework.transaction.annotation.Transactional;
 import com.marcelino.micheck.model.Entrada;
 import com.marcelino.micheck.model.Categoria;
 import com.marcelino.micheck.model.Episodio;
+import com.marcelino.micheck.model.Usuario;
 import com.marcelino.micheck.service.EntradaService;
 import com.marcelino.micheck.service.CategoriaService;
+import com.marcelino.micheck.service.UsuarioService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,16 +24,26 @@ public class EntradaController {
 
     private final EntradaService entradaService;
     private final CategoriaService categoriaService;
+    private final UsuarioService usuarioService;
 
-    public EntradaController(EntradaService entradaService, CategoriaService categoriaService) {
+    public EntradaController(EntradaService entradaService, CategoriaService categoriaService, UsuarioService usuarioService) {
         this.entradaService = entradaService;
         this.categoriaService = categoriaService;
+        this.usuarioService = usuarioService;
+    }
+
+    private Usuario getUsuarioActual(UserDetails userDetails) {
+        return usuarioService.getByEmail(userDetails.getUsername());
     }
 
     @Transactional
     @GetMapping
-    public String listar(@RequestParam(required = false) Integer categoriaIndice, Model model) {
-        List<Categoria> categorias = categoriaService.getTodos();
+    public String listar(@RequestParam(required = false) Integer categoriaIndice,
+                         @AuthenticationPrincipal UserDetails userDetails,
+                         Model model) {
+        Usuario usuario = getUsuarioActual(userDetails);
+        List<Categoria> categorias = categoriaService.getTodos(usuario);
+
 
         if (categoriaIndice == null) {
             if (categorias.isEmpty()) {
@@ -51,10 +65,10 @@ public class EntradaController {
 
         if (categoriaIndice >= 0 && categoriaIndice < categorias.size()) {
             Categoria categoriaSeleccionada = categorias.get(categoriaIndice);
-            model.addAttribute("entradas", entradaService.getActivas(categoriaSeleccionada));
+            model.addAttribute("entradas", entradaService.getActivas(categoriaSeleccionada, usuario));
             model.addAttribute("categoriaSeleccionada", categoriaSeleccionada);
         } else if (categoriaIndice == -2) {
-            model.addAttribute("entradas", entradaService.getArchivadas());
+            model.addAttribute("entradas", entradaService.getArchivadas(usuario));
             model.addAttribute("categoriaSeleccionada", null);
         } else {
             model.addAttribute("entradas", new ArrayList<>());
@@ -67,8 +81,10 @@ public class EntradaController {
     @PostMapping
     public String agregar(@ModelAttribute Entrada entrada,
                           @RequestParam int numeroTemporada,
-                          @RequestParam int numeroUnidades) {
-        entradaService.agregar(entrada, numeroTemporada, numeroUnidades);
+                          @RequestParam int numeroUnidades,
+                          @AuthenticationPrincipal UserDetails userDetails) {
+        Usuario usuario = getUsuarioActual(userDetails);
+        entradaService.agregar(entrada, numeroTemporada, numeroUnidades, usuario);
         return "redirect:/entradas";
     }
 
@@ -77,6 +93,7 @@ public class EntradaController {
         entradaService.eliminar(id);
         return "redirect:/entradas";
     }
+
     @Transactional
     @GetMapping("/{id}")
     public String detalle(@PathVariable Long id,
@@ -133,8 +150,10 @@ public class EntradaController {
     }
 
     @PostMapping("/categorias")
-    public String agregarCategoria(@ModelAttribute("categoria") Categoria categoria) {
-        categoriaService.agregar(categoria);
+    public String agregarCategoria(@ModelAttribute("categoria") Categoria categoria,
+                                   @AuthenticationPrincipal UserDetails userDetails) {
+        Usuario usuario = getUsuarioActual(userDetails);
+        categoriaService.agregar(categoria, usuario);
         return "redirect:/entradas";
     }
 

@@ -20,6 +20,17 @@ public class Entrada {
     private List<Temporada> temporadas = new ArrayList<>();
     private boolean archivada;
 
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    @ManyToOne
+    private Usuario usuario;
+
     public Entrada() {
     }
 

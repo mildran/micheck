@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,8 +12,12 @@
 <nav class="navbar navbar-dark bg-dark mb-4">
     <div class="container">
         <a class="navbar-brand" href="/">✅ MiCheck</a>
-        <div>
+        <div class="d-flex align-items-center gap-2">
             <a class="btn btn-outline-light" href="/entradas">Entradas</a>
+            <a class="btn btn-outline-warning" href="/admin" sec:authorize="hasRole('ADMIN')">Admin</a>
+            <form th:action="@{/logout}" method="post" class="d-inline" sec:authorize="isAuthenticated()">
+                <button type="submit" class="btn btn-outline-danger">Cerrar sesión</button>
+            </form>
         </div>
     </div>
 </nav>
