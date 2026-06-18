@@ -57,4 +57,10 @@ public class UsuarioController {
         usuarioService.hacerAdmin(id);
         return "redirect:/admin";
     }
+
+    @PostMapping("/admin/dar-de-baja/{id}")
+    public String darDeBaja(@PathVariable Long id) {
+        usuarioService.rechazar(id);
+        return "redirect:/admin";
+    }
 }

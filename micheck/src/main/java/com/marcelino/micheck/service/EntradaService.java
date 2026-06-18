@@ -101,4 +101,10 @@ public class EntradaService {
         entrada.setArchivada(false);
         entradaRepository.save(entrada);
     }
+
+    public void actualizarObservaciones(Long id, String observaciones) {
+        Entrada entrada = getEntrada(id);
+        entrada.setObservaciones(observaciones);
+        entradaRepository.save(entrada);
+    }
 }

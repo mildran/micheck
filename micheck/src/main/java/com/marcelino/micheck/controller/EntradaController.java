@@ -168,4 +168,10 @@ public class EntradaController {
         entradaService.restaurar(id);
         return "redirect:/entradas?categoriaIndice=-2";
     }
+
+    @PostMapping("/{id}/observaciones")
+    public String actualizarObservaciones(@PathVariable Long id, @RequestParam String observaciones) {
+        entradaService.actualizarObservaciones(id, observaciones);
+        return "redirect:/entradas/" + id;
+    }
 }
